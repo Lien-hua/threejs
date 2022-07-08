@@ -1,0 +1,68 @@
+import * as THREE from 'three';
+// 导入轨道控制器
+import {
+    OrbitControls
+} from 'three/examples/jsm/controls/OrbitControls'
+// 目标：了解基本内容
+const scene = new THREE.Scene(); // 创建场景
+const camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+); // 创建相机
+camera.position.set(0, 0, 10) // 相机位置
+scene.add(camera);
+
+// 创建物体
+const box = new THREE.BoxBufferGeometry();
+const boxMaterial = new THREE.MeshBasicMaterial({
+    color: 0xffff00
+});
+// 根据几何体和材质创建物体
+const cube = new THREE.Mesh(box, boxMaterial);
+
+// 修改物体位置
+// cube.position.set(0, 0, 10) // ==== cube.position.z = 50
+scene.add(cube);
+
+// 初始化渲染器
+const renderer = new THREE.WebGLRenderer();
+// 设置渲染的尺寸大小
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+// 将webgl渲染的canvas添加到body上
+document.body.appendChild(renderer.domElement);
+
+// 使用渲染器，通过相机将场景渲染进来
+renderer.render(scene, camera)
+
+// 创建轨道控制器
+const controls = new OrbitControls(camera, renderer.domElement)
+
+// 创建坐标轴
+const axesHelper = new THREE.AxesHelper(5);
+scene.add(axesHelper) // 红x  绿y  蓝z
+
+// 设置渲染函数
+function animate(time) {
+    // 修改物体位置
+    // cube.position.x += 0.1
+    // cube.rotation.x += .1
+    // if (cube.position.x > 5) {
+    //     cube.position.x = 0
+    // }
+    // 控制物体缩放
+    // cube.scale.x = 2;
+    // 物体旋转
+    // cube.rotation.set(Math.PI / 4, Math.PI / 4, 0);
+
+    let t = time / 1000 % 5;
+    cube.position.x = t * 1;
+    if (cube.position.x > 5) {
+        cube.position.x = 0;
+    }
+    renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+}
+animate();

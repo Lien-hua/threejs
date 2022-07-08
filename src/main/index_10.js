@@ -4,7 +4,7 @@ import {
     OrbitControls
 } from 'three/examples/jsm/controls/OrbitControls'
 import gsap from 'gsap';
-// 目标：纹理常用属性
+// 目标：使用bufferGeometry创建图形
 import * as dat from 'dat.gui';
 const scene = new THREE.Scene(); // 创建场景
 const camera = new THREE.PerspectiveCamera(
@@ -16,24 +16,23 @@ const camera = new THREE.PerspectiveCamera(
 camera.position.set(0, 0, 10) // 相机位置
 scene.add(camera);
 
-
-// 导入纹理
-const texture = new THREE.TextureLoader()
-const door = texture.load('./texture/door.jpeg')
-
-door.center.set(.5, .5) // 纹理中心点
-door.offset.x = .5; // 纹理偏移设置
-door.rotation = Math.PI / 4 // 旋转设置
-door.repeat.set(2, 3) // 纹理的重复
-door.wrapS = THREE.RepeatWrapping // 纹理重复模式
-
-const cubeGeo = new THREE.BoxBufferGeometry(1, 1, 1)
-const basicMaterial = new THREE.MeshBasicMaterial({
-    color: '#ffff00',
-    map: door // 颜色纹理
-});
-const cube = new THREE.Mesh(cubeGeo, basicMaterial);
-scene.add(cube)
+// 创建物体
+for (let i = 0; i < 50; i++) {
+    const geo = new THREE.BufferGeometry(),
+        positionArr = new Float32Array(9);
+    for (let j = 0; j < 9; j++) {
+        positionArr[j] = Math.random() * 10 - 5
+    }
+    let color = new THREE.Color(Math.random(), Math.random(), Math.random())
+    geo.setAttribute("position", new THREE.BufferAttribute(positionArr, 3));
+    const material = new THREE.MeshBasicMaterial({
+        color,
+        transparent: true,
+        opacity: .5
+    })
+    const mesh = new THREE.Mesh(geo, material);
+    scene.add(mesh)
+}
 
 // 初始化渲染器
 const renderer = new THREE.WebGLRenderer();
